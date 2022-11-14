@@ -1,0 +1,138 @@
+<mat-card>
+  <mat-card-title>
+    Stock values
+  </mat-card-title>
+  <mat-card-content>
+    <form
+      [formGroup]="form"
+      *ngIf="form"
+    >
+      <div gdColumns="300px 300px 300px" gdGap="10px">
+        <mat-form-field appearance="fill">
+          <mat-label>Safety stock qty</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="safetyStockQuantity"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Safety stock days</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="safetyStockInDays"
+            >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Safety stock €</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="safetyStockValue"
+            >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Maximum stock qty</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="maximumStockQuantity"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Maximum stock days</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="maximumStockInDays"
+            >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Maximum stock €</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="maximumStockValue"
+            >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Order lot qty</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="orderLotQuantity"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Order lot days</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="orderLotInDays"
+            >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Order lot €</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="orderLotValue"
+            >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Reorder point qty</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="reorderPointQuantity"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Reorder point days</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="reorderPointInDays"
+            >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Reorder point €</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="reorderPointValue"
+            >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Inventory turnover</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="inventoryTurnoverTarget"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Average stock days</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="averageStockInDays"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Average stock value (€)</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="averageStockValue"
+          >
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

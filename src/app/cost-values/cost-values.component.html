@@ -1,0 +1,62 @@
+<mat-card>
+  <mat-card-title>
+    Cost values
+  </mat-card-title>
+  <mat-card-content>
+    <form
+      [formGroup]="form"
+      *ngIf="form"
+    >
+      <div gdColumns="300px 300px 300px" gdGap="10px">
+        <mat-form-field appearance="fill">
+          <mat-label>Incoming stock transaction qty</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="incomingStockTransactionQuantityTarget"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Labour cost (€)</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="labourCost"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Warehousing cost (€)</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="warehousingCost"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Total cost (€)</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="totalCost"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Unit price cost percentage</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="unitPriceCostPercentage"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Unit price with costs (€)</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="unitPriceWithCosts"
+          >
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,52 @@
+<mat-card>
+  <mat-card-title>
+    Basic values
+  </mat-card-title>
+  <form
+    [formGroup]="form"
+    *ngIf="form"
+  >
+    <div gdColumns="300px 300px" gdGap="10px">
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Unit price (€)
+        </mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="unitPrice"
+        >
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Order handling cost (€)
+        </mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="orderHandlingCost"
+        >
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Warehousing cost percentage
+        </mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="warehousingCostPercentage"
+        >
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>
+          Lead time (days)
+        </mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="leadTimeInDays"
+        >
+      </mat-form-field>
+    </div>
+  </form>
+</mat-card>

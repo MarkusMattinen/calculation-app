@@ -1,0 +1,97 @@
+<mat-card>
+  <mat-card-title>
+    Consumption values
+  </mat-card-title>
+  <mat-card-content>
+    <form
+      [formGroup]="form"
+      *ngIf="form"
+    >
+      <div gdColumns="300px 300px" gdGap="20px">
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Daily consumption (units)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="dailyConsumptionQuantityTarget"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Daily consumption (€)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="dailyConsumptionQuantityTargetValue"
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Weekly consumption (units)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="weeklyConsumptionQuantityTarget"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Weekly consumption (€)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="weeklyConsumptionQuantityTargetValue"
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Annual consumption (units)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="annualConsumptionQuantityTarget"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Annual consumption (€)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="annualConsumptionQuantityTargetValue"
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Lead time consumption (units)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="leadTimeConsumptionQuantity"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>
+            Lead time consumption (€)
+          </mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="leadTimeConsumptionValue"
+          >
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
