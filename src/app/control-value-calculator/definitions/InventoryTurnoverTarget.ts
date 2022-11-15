@@ -1,12 +1,19 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, ValidationFn } from '../CalculationDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class InventoryTurnoverTarget implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('daysInYear', 'averageStockInDays')
+      .useValuesDistinct('daysInYear', 'averageStockInDays')
       .validatePositiveValue('daysInYear', 'averageStockInDays')
       .calculate(({ daysInYear, averageStockInDays }) =>
         daysInYear.value / averageStockInDays.value
       );
+  }
+
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositiveOrZero()
+      .validate();
   }
 }

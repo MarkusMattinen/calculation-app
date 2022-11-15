@@ -1,11 +1,11 @@
+import { ValidationFn } from './../CalculationDataSource';
+import { ValidationDataSource } from './../ValidationDataSource';
 import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn } from '../CalculationDataSource';
 import { LockDataSource } from '../LockDataSource';
 
 export class SafetyStockInDays implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
-    return dataSource.tryInOrder(
-      this.calculateFromSafetyStockQuantity(dataSource)
-    );
+    return this.calculateFromSafetyStockQuantity(dataSource);
   }
 
   isEditable(dataSource: LockDataSource): IsEditableFn {
@@ -14,11 +14,18 @@ export class SafetyStockInDays implements ControlValueCalculation<number> {
       .editableWhen(({ safetyStockQuantityLocked }) => !safetyStockQuantityLocked);
   }
 
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositiveOrZero()
+      .validate();
+  }
+
   private calculateFromSafetyStockQuantity(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('safetyStockQuantity', 'safetyStockValue', 'dailyConsumptionQuantityTarget')
+      .useValuesDistinct('safetyStockQuantity', 'dailyConsumptionQuantityTarget')
       .onlyWhenAnyExplicitlySet('safetyStockQuantity', 'safetyStockValue')
-      .validatePositiveValue('safetyStockQuantity', 'dailyConsumptionQuantityTarget')
+      .validatePositiveValue('dailyConsumptionQuantityTarget')
+      .validatePositiveOrZeroValue('safetyStockQuantity')
       .calculate(({ safetyStockQuantity, dailyConsumptionQuantityTarget }) =>
         safetyStockQuantity.value / dailyConsumptionQuantityTarget.value
       );

@@ -1,16 +1,21 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, ValidationFn } from '../CalculationDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class ReorderPointQuantity implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
-    return dataSource.tryInOrder(
-      this.calculateFromSafetyStock(dataSource)
-    );
+    return this.calculateFromSafetyStock(dataSource);
+  }
+
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositiveOrZero()
+      .validate();
   }
 
   private calculateFromSafetyStock(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('safetyStockQuantity', 'leadTimeConsumptionQuantity')
-      .validatePositiveValue('safetyStockQuantity', 'leadTimeConsumptionQuantity')
+      .useValuesDistinct('safetyStockQuantity', 'leadTimeConsumptionQuantity')
+      .validatePositiveOrZeroValue('safetyStockQuantity', 'leadTimeConsumptionQuantity')
       .calculate(({ safetyStockQuantity, leadTimeConsumptionQuantity }) =>
         safetyStockQuantity.value + leadTimeConsumptionQuantity.value
       );

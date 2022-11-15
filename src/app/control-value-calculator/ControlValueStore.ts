@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { ControlValue, ControlValueState } from './ControlValue';
-import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn } from './CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn, ValidationFn } from './CalculationDataSource';
 import {
   AnyControlValue,
   ControlValueKey,
@@ -10,8 +10,9 @@ import {
   defaultControlValues,
   wrapNullValues
 } from './ControlValues';
-import { cloneDeep, isEqual, isFunction, mapKeys, mapValues, pickBy } from 'lodash-es';
+import { cloneDeep, isEmpty, isEqual, isFunction, mapKeys, mapValues, pickBy } from 'lodash-es';
 import { LockDataSource } from './LockDataSource';
+import { ValidationDataSource } from './ValidationDataSource';
 
 const DEBUG = true;
 const MAX_ROUNDS = 10;
@@ -28,6 +29,7 @@ export class ControlValueStore {
   ) as ControlValueLocks;
   private calculationFns: Partial<Record<ControlValueKey, CalculationFn>> = {};
   private isEditableFns: Partial<Record<ControlValueKey, IsEditableFn>> = {};
+  private validationFns: Partial<Record<ControlValueKey, ValidationFn>> = {};
 
   /**
    * Apply partial updates to store
@@ -87,14 +89,15 @@ export class ControlValueStore {
   private applyChangesAndCalculate(updates: Partial<ControlValues>, skippedCalculations: ControlValueKey[], round: number = 0): void {
     const { changes, lockChanges } = this.applyChanges(updates);
 
+    // Clone control values so that calculations cannot modify them directly, and to make comparing to previous values easier
+    const controlValues = cloneDeep(this.controlValues);
+
     // Only run calculations if something changed
     if (changes && round < MAX_ROUNDS) {
       if (DEBUG) {
         console.log('starting calculation round', round);
       }
 
-      // Clone control values so that calculations cannot modify them directly, and to make comparing to previous values easier
-      const controlValues = cloneDeep(this.controlValues);
       // Run all calculations once, and collect the results
       const calculationResults: Partial<ControlValues> = pickBy(
         mapValues(this.calculationFns, (value, key: ControlValueKey) =>
@@ -121,6 +124,20 @@ export class ControlValueStore {
       // Apply editable states to store
       this.applyChanges(isEditableResults);
     }
+
+    // Run validators for control values that are not already in error state
+    const validationResults: Partial<ControlValues> = mapValues(this.validationFns, (value, key: ControlValueKey) => {
+      if (isEmpty(controlValues[key]?.errors) && controlValues[key].value != null) {
+        return {
+          errors: controlValues[key]?.errors || this.validationFns[key](controlValues[key]?.value, controlValues)
+        };
+      }
+
+      return null;
+    });
+
+    // Apply validation results to store
+    this.applyChanges(validationResults);
 
     // Update the subject after calculations have finished
     this.controlValues$.next(this.controlValues);
@@ -149,10 +166,16 @@ export class ControlValueStore {
    * Connect a calculation to the store
    */
   public addCalculation<T>(key: ControlValueKey, calculation: ControlValueCalculation<T>): void {
-    const dataSource = new CalculationDataSource(key)
+    if (isFunction(calculation.calculate)) {
+      const dataSource = new CalculationDataSource(key)
       .onlyWhenNotLocked(); // Never calculate locked values
+      this.calculationFns[key] = calculation.calculate(dataSource);
+    }
 
-    this.calculationFns[key] = calculation.calculate(dataSource);
+    if (isFunction(calculation.validate)) {
+      const validationDataSource = new ValidationDataSource(key);
+      this.validationFns[key] = calculation.validate(validationDataSource);
+    }
 
     if (isFunction(calculation.isEditable)) {
       const lockDataSource = new LockDataSource(key);
@@ -168,7 +191,7 @@ export class ControlValueStore {
     // Add EXPLICITLY_SET state to all updated control values and clear errors
     for (const key of changedKeys) {
       updates[key].state = ControlValueState.EXPLICITLY_SET;
-      updates[key].errors = [];
+      updates[key].errors = null;
     }
 
     this.applyChangesAndCalculate(updates, changedKeys);
@@ -182,7 +205,7 @@ export class ControlValueStore {
       [key]: {
         ...controlValue,
         state: ControlValueState.EXPLICITLY_SET,
-        errors: []
+        errors: null
       }
     };
 
@@ -197,7 +220,7 @@ export class ControlValueStore {
       [key]: {
         value,
         state: ControlValueState.EXPLICITLY_SET,
-        errors: []
+        errors: null
       }
     };
 

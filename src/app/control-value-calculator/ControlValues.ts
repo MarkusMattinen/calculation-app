@@ -96,7 +96,7 @@ export function wrapNullValues(controlValues: ControlValues): ControlValues {
         value: null,
         locked: false,
         editable: true,
-        errors: [],
+        errors: null,
         state: ControlValueState.INITIAL
       };
     }

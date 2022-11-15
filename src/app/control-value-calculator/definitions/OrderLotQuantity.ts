@@ -1,5 +1,6 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn, ValidationFn } from '../CalculationDataSource';
 import { LockDataSource } from '../LockDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class OrderLotQuantity implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
@@ -15,9 +16,15 @@ export class OrderLotQuantity implements ControlValueCalculation<number> {
       .editableWhen(({ orderLotInDaysLocked }) => !orderLotInDaysLocked);
   }
 
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositive()
+      .validate();
+  }
+
   private calculateFromOrderLotInDays(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('orderLotInDays', 'dailyConsumptionQuantityTarget')
+      .useValuesDistinct('orderLotInDays', 'dailyConsumptionQuantityTarget')
       .validatePositiveValue('orderLotInDays', 'dailyConsumptionQuantityTarget')
       .calculate(({ orderLotInDays, dailyConsumptionQuantityTarget }) =>
         orderLotInDays.value * dailyConsumptionQuantityTarget.value
@@ -26,7 +33,7 @@ export class OrderLotQuantity implements ControlValueCalculation<number> {
 
   private calculateFromOrderLotValue(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('orderLotValue', 'unitPrice')
+      .useValuesDistinct('orderLotValue', 'unitPrice')
       .onlyWhenAnyExplicitlySet('orderLotValue')
       .validatePositiveValue('orderLotValue', 'unitPrice')
       .calculate(({ orderLotValue, unitPrice }) =>

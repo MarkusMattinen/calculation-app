@@ -1,9 +1,20 @@
+type KnownControlValueError = {
+  valueIsNull?: string[];
+  valueIsNotPositive?: string[];
+  valueIsNotPositiveOrZero?: string[];
+  mustBePositive?: string;
+  mustBePositiveOrZero?: string;
+};
+
+type DynamicControlValueError = { [key: string]: any };
+export type ControlValueError = KnownControlValueError & DynamicControlValueError;
+
 export type ControlValue<T> = {
   value?: T;
   locked?: boolean;
   editable?: boolean;
   state?: ControlValueState;
-  errors?: string[][];
+  errors?: ControlValueError;
 };
 
 export enum ControlValueState {

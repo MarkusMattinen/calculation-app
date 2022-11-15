@@ -1,5 +1,6 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn, ValidationFn } from '../CalculationDataSource';
 import { LockDataSource } from '../LockDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class MaximumStockQuantity implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
@@ -15,9 +16,15 @@ export class MaximumStockQuantity implements ControlValueCalculation<number> {
       .editableWhen(({ maximumStockInDaysLocked }) => !maximumStockInDaysLocked);
   }
 
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositive()
+      .validate();
+  }
+
   private calculateFromMaximumStockInDays(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('maximumStockInDays', 'dailyConsumptionQuantityTarget')
+      .useValuesDistinct('maximumStockInDays', 'dailyConsumptionQuantityTarget')
       .validatePositiveValue('maximumStockInDays', 'dailyConsumptionQuantityTarget')
       .calculate(({ maximumStockInDays, dailyConsumptionQuantityTarget }) =>
         maximumStockInDays.value * dailyConsumptionQuantityTarget.value
@@ -26,7 +33,7 @@ export class MaximumStockQuantity implements ControlValueCalculation<number> {
 
   private calculateFromMaximumStockValue(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('maximumStockValue', 'unitPrice')
+      .useValuesDistinct('maximumStockValue', 'unitPrice')
       .onlyWhenAnyExplicitlySet('maximumStockValue')
       .validatePositiveValue('maximumStockValue', 'unitPrice')
       .calculate(({ maximumStockValue, unitPrice }) =>

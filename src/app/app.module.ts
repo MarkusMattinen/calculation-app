@@ -15,6 +15,7 @@ import { StockValuesComponent } from './stock-values/stock-values.component';
 import { ConsumptionValuesComponent } from './consumption-values/consumption-values.component';
 import { BasicValuesComponent } from './basic-values/basic-values.component';
 import { CostValuesComponent } from './cost-values/cost-values.component';
+import { ControlValueFormFieldComponent } from './control-value-form-field/control-value-form-field.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { CostValuesComponent } from './cost-values/cost-values.component';
     StockValuesComponent,
     ConsumptionValuesComponent,
     BasicValuesComponent,
-    CostValuesComponent
+    CostValuesComponent,
+    ControlValueFormFieldComponent
   ],
   imports: [
     BrowserModule,

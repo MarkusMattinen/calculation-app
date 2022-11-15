@@ -1,7 +1,8 @@
+import { isEmpty } from 'lodash-es';
 import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { FormBuilder } from '@angular/forms';
 import { ControlValueKey } from '../control-value-calculator/ControlValues';
 import { ControlValueCalculator } from '../control-value-calculator/ControlValueCalculator';
 
@@ -12,13 +13,29 @@ import { ControlValueCalculator } from '../control-value-calculator/ControlValue
 })
 export class StockValuesComponent implements OnInit {
   @Input() controlValueCalculator: ControlValueCalculator;
-  form?: FormGroup;
+  form = this.formBuilder.group({
+    safetyStockQuantity: [null],
+    safetyStockInDays: [null],
+    safetyStockValue: [null],
+    maximumStockQuantity: [null],
+    maximumStockInDays: [null],
+    maximumStockValue: [null],
+    orderLotQuantity: [null],
+    orderLotInDays: [null],
+    orderLotValue: [null],
+    reorderPointQuantity: [{ value: null, disabled: true }],
+    reorderPointInDays: [{ value: null, disabled: true }],
+    reorderPointValue: [{ value: null, disabled: true }],
+    averageStockInDays: [{ value: null, disabled: true }],
+    averageStockValue: [{ value: null, disabled: true }],
+    inventoryTurnoverTarget: [{ value: null, disabled: true }],
+  });
 
   private destroy$ = new Subject();
 
   constructor(
-    private readonly formBuilder: FormBuilder) {
-  }
+    private readonly formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.buildForm();
@@ -29,60 +46,41 @@ export class StockValuesComponent implements OnInit {
   }
 
   private buildForm() {
-    this.controlValueCalculator.getAll$()
-      .pipe(take(1))
-      .subscribe((controlValues) => {
-        this.form = this.formBuilder.group({
-          safetyStockQuantity: [ controlValues.safetyStockQuantity.value ],
-          safetyStockInDays: [ controlValues.safetyStockInDays.value ],
-          safetyStockValue: [ controlValues.safetyStockValue.value ],
-          maximumStockQuantity: [ controlValues.maximumStockQuantity.value ],
-          maximumStockInDays: [ controlValues.maximumStockInDays.value ],
-          maximumStockValue: [ controlValues.maximumStockValue.value ],
-          orderLotQuantity: [ controlValues.orderLotQuantity.value ],
-          orderLotInDays: [ controlValues.orderLotInDays.value ],
-          orderLotValue: [ controlValues.orderLotValue.value ],
-          reorderPointQuantity: [{ value: controlValues.reorderPointQuantity.value, disabled: true }],
-          reorderPointInDays: [{ value: controlValues.reorderPointInDays.value, disabled: true }],
-          reorderPointValue: [{ value: controlValues.reorderPointValue.value, disabled: true }],
-          averageStockInDays: [{ value: controlValues.averageStockInDays.value, disabled: true }],
-          averageStockValue: [{ value: controlValues.averageStockValue.value, disabled: true }],
-          inventoryTurnoverTarget: [{ value: controlValues.inventoryTurnoverTarget.value, disabled: true }],
-        });
-
-        const connectForm = (formControlName: string, controlValueName: ControlValueKey) => {
-          this.form?.get(formControlName)?.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((value) => {
-              const numberValue = Number(`${value}`);
-              this.controlValueCalculator.setValue(controlValueName, isFinite(numberValue) ? numberValue : null);
-            });
-
-          this.form?.get(formControlName)?.setValidators([
-            Validators.min(0.001),
-            Validators.max(Number.MAX_SAFE_INTEGER)]);
-
-          this.controlValueCalculator.getValue$(controlValueName)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((value) =>
-              this.form?.get(formControlName)?.setValue(value?.toFixed(0), { emitEvent: false }));
-        };
-
-        connectForm('safetyStockQuantity', 'safetyStockQuantity');
-        connectForm('safetyStockInDays', 'safetyStockInDays');
-        connectForm('safetyStockValue', 'safetyStockValue');
-        connectForm('maximumStockQuantity', 'maximumStockQuantity');
-        connectForm('maximumStockInDays', 'maximumStockInDays');
-        connectForm('maximumStockValue', 'maximumStockValue');
-        connectForm('orderLotQuantity', 'orderLotQuantity');
-        connectForm('orderLotInDays', 'orderLotInDays');
-        connectForm('orderLotValue', 'orderLotValue');
-        connectForm('reorderPointInDays', 'reorderPointInDays');
-        connectForm('reorderPointQuantity', 'reorderPointQuantity');
-        connectForm('reorderPointValue', 'reorderPointValue');
-        connectForm('averageStockInDays', 'averageStockInDays');
-        connectForm('averageStockValue', 'averageStockValue');
-        connectForm('inventoryTurnoverTarget', 'inventoryTurnoverTarget');
-      });
+    this.connectFormControl('safetyStockQuantity', 'safetyStockQuantity');
+    this.connectFormControl('safetyStockInDays', 'safetyStockInDays');
+    this.connectFormControl('safetyStockValue', 'safetyStockValue');
+    this.connectFormControl('maximumStockQuantity', 'maximumStockQuantity');
+    this.connectFormControl('maximumStockInDays', 'maximumStockInDays');
+    this.connectFormControl('maximumStockValue', 'maximumStockValue');
+    this.connectFormControl('orderLotQuantity', 'orderLotQuantity');
+    this.connectFormControl('orderLotInDays', 'orderLotInDays');
+    this.connectFormControl('orderLotValue', 'orderLotValue');
+    this.connectFormControl('reorderPointInDays', 'reorderPointInDays');
+    this.connectFormControl('reorderPointQuantity', 'reorderPointQuantity');
+    this.connectFormControl('reorderPointValue', 'reorderPointValue');
+    this.connectFormControl('averageStockInDays', 'averageStockInDays');
+    this.connectFormControl('averageStockValue', 'averageStockValue');
+    this.connectFormControl('inventoryTurnoverTarget', 'inventoryTurnoverTarget');
   }
+
+  private connectFormControl(formControlName: keyof typeof this.form.controls, controlValueName: ControlValueKey) {
+    this.form.get(formControlName).valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const numberValue = Number(`${value}`);
+        this.controlValueCalculator.setValue(controlValueName, isFinite(numberValue) ? numberValue : null);
+      });
+
+    this.controlValueCalculator.get$(controlValueName)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ value, errors }) => {
+        const formControl = this.form.get(formControlName);
+        formControl.setValue(value?.toFixed(0), { emitEvent: false });
+        formControl.setErrors(!isEmpty(errors) ? { ...errors } : null);
+
+        if (!isEmpty(errors)) {
+          formControl.markAsTouched();
+        }
+      });
+  };
 }

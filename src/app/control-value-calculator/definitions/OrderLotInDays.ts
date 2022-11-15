@@ -1,9 +1,10 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn, ValidationFn } from '../CalculationDataSource';
 import { LockDataSource } from '../LockDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class OrderLotInDays implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
-    return dataSource.tryInOrder(
+    return dataSource.merge(
       this.calculateFromOrderLotQuantity(dataSource),
       this.calculateFromMaximumStock(dataSource)
     );
@@ -15,13 +16,19 @@ export class OrderLotInDays implements ControlValueCalculation<number> {
       .editableWhen(({ orderLotQuantityLocked }) => !orderLotQuantityLocked);
   }
 
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositive()
+      .validate();
+  }
+
   private calculateFromMaximumStock(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .onlyWhenAllNotNull('safetyStockInDays')
-      .useValues('maximumStockInDays', 'maximumStockQuantity', 'maximumStockValue')
+      .useValuesDistinct('maximumStockInDays')
+      .useValues('safetyStockInDays') // Not recalculated when safetyStockInDays changes
       .onlyWhenAnyExplicitlySet('maximumStockInDays', 'maximumStockQuantity', 'maximumStockValue')
-      .validatePositiveValue('maximumStockInDays', 'safetyStockInDays')
-      .validatePositiveResult()
+      .validatePositiveValue('maximumStockInDays')
+      .validatePositiveOrZeroValue('safetyStockInDays')
       .calculate(({ maximumStockInDays, safetyStockInDays }) =>
         maximumStockInDays.value - safetyStockInDays.value
       );
@@ -29,7 +36,7 @@ export class OrderLotInDays implements ControlValueCalculation<number> {
 
   private calculateFromOrderLotQuantity(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('orderLotQuantity', 'orderLotValue', 'dailyConsumptionQuantityTarget')
+      .useValuesDistinct('orderLotQuantity', 'dailyConsumptionQuantityTarget')
       .onlyWhenAnyExplicitlySet('orderLotQuantity', 'orderLotValue')
       .validatePositiveValue('orderLotQuantity', 'dailyConsumptionQuantityTarget')
       .calculate(({ orderLotQuantity, dailyConsumptionQuantityTarget }) =>

@@ -13,89 +13,41 @@
         gdGap="10px"
         style="max-width: 600px"
       >
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Daily consumption (units)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="dailyConsumptionQuantityTarget"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Daily consumption (€)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="dailyConsumptionQuantityTargetValue"
-          >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Daily consumption (qty)"
+          [control]="form.controls.dailyConsumptionQuantityTarget"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Daily consumption (€)"
+          [control]="form.controls.dailyConsumptionQuantityTargetValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Weekly consumption (units)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="weeklyConsumptionQuantityTarget"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Weekly consumption (€)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="weeklyConsumptionQuantityTargetValue"
-          >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Weekly consumption (qty)"
+          [control]="form.controls.weeklyConsumptionQuantityTarget"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Weekly consumption (€)"
+          [control]="form.controls.weeklyConsumptionQuantityTargetValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Annual consumption (units)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="annualConsumptionQuantityTarget"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Annual consumption (€)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="annualConsumptionQuantityTargetValue"
-          >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Annual consumption (qty)"
+          [control]="form.controls.annualConsumptionQuantityTarget"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Annual consumption (€)"
+          [control]="form.controls.annualConsumptionQuantityTargetValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Lead time consumption (units)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="leadTimeConsumptionQuantity"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>
-            Lead time consumption (€)
-          </mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="leadTimeConsumptionValue"
-          >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Lead time consumption (qty)"
+          [control]="form.controls.leadTimeConsumptionQuantity"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Lead time consumption (€)"
+          [control]="form.controls.leadTimeConsumptionValue"
+        ></app-control-value-form-field>
       </div>
     </form>
   </mat-card-content>

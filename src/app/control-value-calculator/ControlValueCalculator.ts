@@ -1,3 +1,7 @@
+import { WarehousingCostPercentage } from './definitions/WarehousingCostPercentage';
+import { OrderHandlingCost } from './definitions/OrderHandlingCost';
+import { LeadTimeInDays } from './definitions/LeadTimeInDays';
+import { DaysInYear } from './definitions/DaysInYear';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { cloneDeep, isEqual } from 'lodash-es';
@@ -34,6 +38,7 @@ import { UnitPriceWithCosts } from './definitions/UnitPriceWithCosts';
 import { WarehousingCost } from './definitions/WarehousingCost';
 import { WeeklyConsumptionQuantityTarget } from './definitions/WeeklyConsumptionQuantityTarget';
 import { WeeklyConsumptionQuantityTargetValue } from './definitions/WeeklyConsumptionQuantityTargetValue';
+import { UnitPrice } from './definitions/UnitPrice';
 
 /**
  * Main public entrypoint to the control value store and calculations.
@@ -50,14 +55,17 @@ export class ControlValueCalculator {
     this.store.addCalculation('averageStockValue', new AverageStockValue());
     this.store.addCalculation('dailyConsumptionQuantityTarget', new DailyConsumptionQuantityTarget());
     this.store.addCalculation('dailyConsumptionQuantityTargetValue', new DailyConsumptionQuantityTargetValue());
+    this.store.addCalculation('daysInYear', new DaysInYear());
     this.store.addCalculation('incomingStockTransactionQuantityTarget', new IncomingStockTransactionQuantityTarget());
     this.store.addCalculation('inventoryTurnoverTarget', new InventoryTurnoverTarget());
     this.store.addCalculation('labourCost', new LabourCost());
     this.store.addCalculation('leadTimeConsumptionQuantity', new LeadTimeConsumptionQuantity());
     this.store.addCalculation('leadTimeConsumptionValue', new LeadTimeConsumptionValue());
+    this.store.addCalculation('leadTimeInDays', new LeadTimeInDays());
     this.store.addCalculation('maximumStockInDays', new MaximumStockInDays());
     this.store.addCalculation('maximumStockQuantity', new MaximumStockQuantity());
     this.store.addCalculation('maximumStockValue', new MaximumStockValue());
+    this.store.addCalculation('orderHandlingCost', new OrderHandlingCost());
     this.store.addCalculation('orderLotInDays', new OrderLotInDays());
     this.store.addCalculation('orderLotQuantity', new OrderLotQuantity());
     this.store.addCalculation('orderLotValue', new OrderLotValue());
@@ -68,9 +76,11 @@ export class ControlValueCalculator {
     this.store.addCalculation('safetyStockQuantity', new SafetyStockQuantity());
     this.store.addCalculation('safetyStockValue', new SafetyStockValue());
     this.store.addCalculation('totalCost', new TotalCost());
+    this.store.addCalculation('unitPrice', new UnitPrice());
     this.store.addCalculation('unitPriceCostPercentage', new UnitPriceCostPercentage());
     this.store.addCalculation('unitPriceWithCosts', new UnitPriceWithCosts());
     this.store.addCalculation('warehousingCost', new WarehousingCost());
+    this.store.addCalculation('warehousingCostPercentage', new WarehousingCostPercentage());
     this.store.addCalculation('weeklyConsumptionQuantityTarget', new WeeklyConsumptionQuantityTarget());
     this.store.addCalculation('weeklyConsumptionQuantityTargetValue', new WeeklyConsumptionQuantityTargetValue());
   }

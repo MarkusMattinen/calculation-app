@@ -13,130 +13,70 @@
         gdGap="10px"
         style="max-width: 900px"
       >
-        <mat-form-field appearance="fill">
-          <mat-label>Safety stock qty</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="safetyStockQuantity"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Safety stock days</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="safetyStockInDays"
-            >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Safety stock €</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="safetyStockValue"
-            >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Safety stock (qty)"
+          [control]="form.controls.safetyStockQuantity"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Safety stock (days)"
+          [control]="form.controls.safetyStockInDays"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Safety stock (€)"
+          [control]="form.controls.safetyStockValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Maximum stock qty</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="maximumStockQuantity"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Maximum stock days</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="maximumStockInDays"
-            >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Maximum stock €</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="maximumStockValue"
-            >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Maximum stock (qty)"
+          [control]="form.controls.maximumStockQuantity"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Maximum stock (days)"
+          [control]="form.controls.maximumStockInDays"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Maximum stock (€)"
+          [control]="form.controls.maximumStockValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Order lot qty</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="orderLotQuantity"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Order lot days</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="orderLotInDays"
-            >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Order lot €</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="orderLotValue"
-            >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Order lot (qty)"
+          [control]="form.controls.orderLotQuantity"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Order lot (days)"
+          [control]="form.controls.orderLotInDays"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Order lot (€)"
+          [control]="form.controls.orderLotValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Reorder point qty</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="reorderPointQuantity"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Reorder point days</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="reorderPointInDays"
-            >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Reorder point €</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="reorderPointValue"
-            >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Reorder point (qty)"
+          [control]="form.controls.reorderPointQuantity"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Reorder point (days)"
+          [control]="form.controls.reorderPointInDays"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Reorder point (€)"
+          [control]="form.controls.reorderPointValue"
+        ></app-control-value-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Inventory turnover</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="inventoryTurnoverTarget"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Average stock days</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="averageStockInDays"
-          >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Average stock value (€)</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="averageStockValue"
-          >
-        </mat-form-field>
+        <app-control-value-form-field
+          label="Inventory turnover rate"
+          [control]="form.controls.inventoryTurnoverTarget"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Average stock (days)"
+          [control]="form.controls.averageStockInDays"
+        ></app-control-value-form-field>
+        <app-control-value-form-field
+          label="Average stock (€)"
+          [control]="form.controls.averageStockValue"
+        ></app-control-value-form-field>
       </div>
     </form>
   </mat-card-content>

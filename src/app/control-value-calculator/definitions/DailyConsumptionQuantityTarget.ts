@@ -1,21 +1,26 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, ValidationFn } from '../CalculationDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class DailyConsumptionQuantityTarget implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
-    return dataSource.tryInOrder(
-      dataSource.merge(
-        this.calculateFromAnnualTarget(dataSource),
-        this.calculateFromWeeklyTarget(dataSource)
-      ),
-      this.calculateFromDailyTargetValue(dataSource),
+    return dataSource.merge(
+      this.calculateFromAnnualTarget(dataSource),
+      this.calculateFromWeeklyTarget(dataSource),
+      this.calculateFromDailyTargetValue(dataSource)
     );
+  }
+
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositive()
+      .validate();
   }
 
   private calculateFromAnnualTarget(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('annualConsumptionQuantityTarget', 'annualConsumptionQuantityTargetValue', 'daysInYear')
+      .useValuesDistinct('annualConsumptionQuantityTarget', 'daysInYear')
       .onlyWhenAnyExplicitlySet('annualConsumptionQuantityTarget', 'annualConsumptionQuantityTargetValue')
-      .validatePositiveValue('daysInYear')
+      .validatePositiveValue('annualConsumptionQuantityTarget', 'daysInYear')
       .calculate(({ annualConsumptionQuantityTarget, daysInYear }) =>
         annualConsumptionQuantityTarget.value / daysInYear.value
       );
@@ -23,8 +28,9 @@ export class DailyConsumptionQuantityTarget implements ControlValueCalculation<n
 
   private calculateFromWeeklyTarget(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('weeklyConsumptionQuantityTarget', 'weeklyConsumptionQuantityTargetValue')
+      .useValuesDistinct('weeklyConsumptionQuantityTarget')
       .onlyWhenAnyExplicitlySet('weeklyConsumptionQuantityTarget', 'weeklyConsumptionQuantityTargetValue')
+      .validatePositiveValue('weeklyConsumptionQuantityTarget')
       .calculate(({ weeklyConsumptionQuantityTarget }) =>
         weeklyConsumptionQuantityTarget.value / 7
       );
@@ -32,9 +38,9 @@ export class DailyConsumptionQuantityTarget implements ControlValueCalculation<n
 
   private calculateFromDailyTargetValue(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('dailyConsumptionQuantityTargetValue', 'unitPrice')
+      .useValuesDistinct('dailyConsumptionQuantityTargetValue', 'unitPrice')
       .onlyWhenAnyExplicitlySet('dailyConsumptionQuantityTargetValue')
-      .validatePositiveValue('unitPrice')
+      .validatePositiveValue('dailyConsumptionQuantityTargetValue', 'unitPrice')
       .calculate(({ dailyConsumptionQuantityTargetValue, unitPrice }) =>
         dailyConsumptionQuantityTargetValue.value / unitPrice.value
       );

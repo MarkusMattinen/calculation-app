@@ -1,7 +1,8 @@
+import { isEmpty } from 'lodash-es';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ControlValueCalculator } from '../control-value-calculator/ControlValueCalculator';
 import { ControlValueKey } from '../control-value-calculator/ControlValues';
 
@@ -12,7 +13,12 @@ import { ControlValueKey } from '../control-value-calculator/ControlValues';
 })
 export class BasicValuesComponent implements OnInit, OnDestroy {
   @Input() controlValueCalculator: ControlValueCalculator;
-  form?: FormGroup;
+  form = this.formBuilder.group({
+    unitPrice: [null],
+    orderHandlingCost: [null],
+    warehousingCostPercentage: [null],
+    leadTimeInDays: [null],
+  })
 
   private destroy$ = new Subject();
 
@@ -29,38 +35,30 @@ export class BasicValuesComponent implements OnInit, OnDestroy {
   }
 
   private buildForm() {
-    this.controlValueCalculator.getAll$()
-      .pipe(take(1))
-      .subscribe((controlValues) => {
-        this.form = this.formBuilder.group({
-          unitPrice: [ controlValues.unitPrice.value ],
-          orderHandlingCost: [ controlValues.orderHandlingCost.value ],
-          warehousingCostPercentage: [ controlValues.warehousingCostPercentage.value ],
-          leadTimeInDays: [ controlValues.leadTimeInDays.value ],
-        });
-
-        const connectForm = (formControlName: string, controlValueName: ControlValueKey) => {
-          this.form?.get(formControlName)?.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((value) => {
-              const numberValue = Number(`${value}`);
-              this.controlValueCalculator.setValue(controlValueName, isFinite(numberValue) ? numberValue : null);
-            });
-
-          this.form?.get(formControlName)?.setValidators([
-            Validators.min(0.001),
-            Validators.max(Number.MAX_SAFE_INTEGER)]);
-
-          this.controlValueCalculator.getValue$(controlValueName)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((value) =>
-              this.form?.get(formControlName)?.setValue(value?.toFixed(0), { emitEvent: false }));
-        };
-
-        connectForm('unitPrice', 'unitPrice');
-        connectForm('orderHandlingCost', 'orderHandlingCost');
-        connectForm('warehousingCostPercentage', 'warehousingCostPercentage');
-        connectForm('leadTimeInDays', 'leadTimeInDays')
-      });
+    this.connectFormControl('unitPrice', 'unitPrice');
+    this.connectFormControl('orderHandlingCost', 'orderHandlingCost');
+    this.connectFormControl('warehousingCostPercentage', 'warehousingCostPercentage');
+    this.connectFormControl('leadTimeInDays', 'leadTimeInDays')
   }
+
+  private connectFormControl(formControlName: keyof typeof this.form.controls, controlValueName: ControlValueKey) {
+    this.form.get(formControlName).valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const numberValue = Number(`${value}`);
+        this.controlValueCalculator.setValue(controlValueName, isFinite(numberValue) ? numberValue : null);
+      });
+
+    this.controlValueCalculator.get$(controlValueName)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ value, errors }) => {
+        const formControl = this.form.get(formControlName);
+        formControl.setValue(value?.toFixed(0), { emitEvent: false });
+        formControl.setErrors(!isEmpty(errors) ? { ...errors } : null);
+
+        if (!isEmpty(errors)) {
+          formControl.markAsTouched();
+        }
+      });
+  };
 }

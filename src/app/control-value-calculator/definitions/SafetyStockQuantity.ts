@@ -1,5 +1,6 @@
-import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn } from '../CalculationDataSource';
+import { CalculationDataSource, CalculationFn, ControlValueCalculation, IsEditableFn, ValidationFn } from '../CalculationDataSource';
 import { LockDataSource } from '../LockDataSource';
+import { ValidationDataSource } from '../ValidationDataSource';
 
 export class SafetyStockQuantity implements ControlValueCalculation<number> {
   calculate(dataSource: CalculationDataSource): CalculationFn {
@@ -15,10 +16,17 @@ export class SafetyStockQuantity implements ControlValueCalculation<number> {
       .editableWhen(({ safetyStockInDaysLocked }) => !safetyStockInDaysLocked);
   }
 
+  validate(dataSource: ValidationDataSource): ValidationFn {
+    return dataSource
+      .mustBePositiveOrZero()
+      .validate();
+  }
+
   private calculateFromSafetyStockInDays(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('safetyStockInDays', 'dailyConsumptionQuantityTarget')
-      .validatePositiveValue('safetyStockInDays', 'dailyConsumptionQuantityTarget')
+      .useValuesDistinct('safetyStockInDays', 'dailyConsumptionQuantityTarget')
+      .validatePositiveValue('dailyConsumptionQuantityTarget')
+      .validatePositiveOrZeroValue('safetyStockInDays')
       .calculate(({ safetyStockInDays, dailyConsumptionQuantityTarget }) =>
         safetyStockInDays.value * dailyConsumptionQuantityTarget.value
       );
@@ -26,9 +34,10 @@ export class SafetyStockQuantity implements ControlValueCalculation<number> {
 
   private calculateFromSafetyStockValue(dataSource: CalculationDataSource): CalculationFn {
     return dataSource
-      .useValues('safetyStockValue', 'unitPrice')
+      .useValuesDistinct('safetyStockValue', 'unitPrice')
       .onlyWhenAnyExplicitlySet('safetyStockValue')
-      .validatePositiveValue('safetyStockValue', 'unitPrice')
+      .validatePositiveValue('unitPrice')
+      .validatePositiveOrZeroValue('safetyStockValue')
       .calculate(({ safetyStockValue, unitPrice }) =>
         safetyStockValue.value / unitPrice.value
       );
