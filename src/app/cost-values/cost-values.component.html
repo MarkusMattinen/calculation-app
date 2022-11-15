@@ -7,7 +7,12 @@
       [formGroup]="form"
       *ngIf="form"
     >
-      <div gdColumns="300px 300px 300px" gdGap="10px">
+      <div
+        gdColumns="repeat(3, minmax(200px, 1fr))"
+        gdColumns.xs="1fr"
+        gdGap="10px"
+        style="max-width: 900px"
+      >
         <mat-form-field appearance="fill">
           <mat-label>Incoming stock transaction qty</mat-label>
           <input

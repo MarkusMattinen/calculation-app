@@ -6,7 +6,12 @@
     [formGroup]="form"
     *ngIf="form"
   >
-    <div gdColumns="300px 300px" gdGap="10px">
+    <div
+      gdColumns="repeat(2, minmax(200px, 1fr))"
+      gdColumns.xs="1fr"
+      gdGap="10px"
+      style="max-width: 600px"
+    >
       <mat-form-field appearance="fill">
         <mat-label>
           Unit price (€)
