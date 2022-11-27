@@ -3,6 +3,7 @@
   <input
     matInput
     type="number"
+    [name]="name"
     [formControl]="control"
   >
   <mat-error *ngIf="control.hasError('mustBePositive')">

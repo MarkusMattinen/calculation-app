@@ -3,7 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ControlValueCalculator } from '../control-value-calculator/ControlValueCalculator';
+import { IControlValueCalculator } from '../control-value-calculator/IControlValueCalculator';
 import { ControlValueKey } from '../control-value-calculator/ControlValues';
 
 @Component({
@@ -12,7 +12,7 @@ import { ControlValueKey } from '../control-value-calculator/ControlValues';
   styleUrls: ['./basic-values.component.less']
 })
 export class BasicValuesComponent implements OnInit, OnDestroy {
-  @Input() controlValueCalculator: ControlValueCalculator;
+  @Input() controlValueCalculator: IControlValueCalculator;
   form = this.formBuilder.group({
     unitPrice: [null],
     orderHandlingCost: [null],

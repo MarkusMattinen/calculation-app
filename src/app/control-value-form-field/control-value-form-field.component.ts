@@ -8,6 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class ControlValueFormFieldComponent {
   @Input() label: string;
+  @Input() name: string;
   @Input() control: FormControl;
 
   constructor() {}

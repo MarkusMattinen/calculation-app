@@ -39,11 +39,12 @@ import { WarehousingCost } from './definitions/WarehousingCost';
 import { WeeklyConsumptionQuantityTarget } from './definitions/WeeklyConsumptionQuantityTarget';
 import { WeeklyConsumptionQuantityTargetValue } from './definitions/WeeklyConsumptionQuantityTargetValue';
 import { UnitPrice } from './definitions/UnitPrice';
+import { IControlValueCalculator } from "./IControlValueCalculator";
 
 /**
  * Main public entrypoint to the control value store and calculations.
  */
-export class ControlValueCalculator {
+export class ControlValueCalculator implements IControlValueCalculator {
   private store: ControlValueStore;
 
   constructor(initialControlValues?: Partial<ControlValues>) {

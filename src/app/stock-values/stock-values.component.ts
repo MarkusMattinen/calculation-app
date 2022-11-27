@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormBuilder } from '@angular/forms';
 import { ControlValueKey } from '../control-value-calculator/ControlValues';
-import { ControlValueCalculator } from '../control-value-calculator/ControlValueCalculator';
+import { IControlValueCalculator } from '../control-value-calculator/IControlValueCalculator';
 
 @Component({
   selector: 'app-stock-values',
@@ -12,7 +12,7 @@ import { ControlValueCalculator } from '../control-value-calculator/ControlValue
   styleUrls: ['./stock-values.component.less']
 })
 export class StockValuesComponent implements OnInit {
-  @Input() controlValueCalculator: ControlValueCalculator;
+  @Input() controlValueCalculator: IControlValueCalculator;
   form = this.formBuilder.group({
     safetyStockQuantity: [null],
     safetyStockInDays: [null],

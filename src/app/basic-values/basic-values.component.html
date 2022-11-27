@@ -14,21 +14,25 @@
     >
       <app-control-value-form-field
         label="Unit price (€)"
+        name="unitPrice"
         [control]="form.controls.unitPrice"
       ></app-control-value-form-field>
 
       <app-control-value-form-field
         label="Order handling cost (€)"
+        name="orderHandlingCost"
         [control]="form.controls.orderHandlingCost"
       ></app-control-value-form-field>
 
       <app-control-value-form-field
         label="Warehousing cost percentage"
+        name="warehousingCostPercentage"
         [control]="form.controls.warehousingCostPercentage"
       ></app-control-value-form-field>
 
       <app-control-value-form-field
         label="Lead time (days)"
+        name="leadTimeInDays"
         [control]="form.controls.leadTimeInDays"
       ></app-control-value-form-field>
     </div>
