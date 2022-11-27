@@ -21,7 +21,7 @@ const MAX_ROUNDS = 10;
  * Main control value store
  */
 export class ControlValueStore {
-  public controlValues: ControlValues = wrapNullValues(defaultControlValues);
+  public controlValues: ControlValues = wrapNullValues(cloneDeep(defaultControlValues));
   public controlValues$: BehaviorSubject<ControlValues> = new BehaviorSubject<ControlValues>(this.controlValues);
   private locks: ControlValueLocks = mapKeys(
     mapValues(this.controlValues, (value) => value.editable),
