@@ -1,6 +1,6 @@
 # CalculationApp
 
-Demo: https://calculation-app-ruby.vercel.app/
+Demo: https://calculation-app-markusmattinen.vercel.app/
 
 This is a demo app acting as a proof-of-concept for a control value calculator.
 Basically the control value calculator is a tool for defining control values (named variables of any type).
